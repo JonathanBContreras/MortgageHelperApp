@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:contentDescription="@string/app_description">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,96 +15,115 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="Home Price">
+            android:hint="@string/home_price"
+            app:startIconDrawable="@android:drawable/ic_menu_edit"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/homePriceInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:contentDescription="@string/home_price"
+                android:importantForAccessibility="yes" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="Square Footage">
+            android:hint="@string/square_footage"
+            app:startIconDrawable="@android:drawable/ic_menu_edit"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/squareFootageInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:contentDescription="@string/square_footage" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="Down Payment (%)">
+            android:hint="@string/down_payment"
+            app:startIconDrawable="@android:drawable/ic_menu_edit"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/downPaymentPercentInput"
+                android:id="@+id/downPaymentInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:hint="Interest Rate (%)">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/interestRateInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:hint="HOA Fees (Monthly)">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/hoaFeesInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:contentDescription="@string/down_payment" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <RadioGroup
-            android:id="@+id/loanTermGroup"
+            android:id="@+id/downPaymentTypeGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/loanTerm15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="15 Years" />
-
-            <RadioButton
-                android:id="@+id/loanTerm30"
+                android:id="@+id/downPaymentAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="30 Years" />
+                android:text="@string/amount"
+                android:contentDescription="@string/amount" />
+
+            <RadioButton
+                android:id="@+id/downPaymentPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/percentage"
+                android:contentDescription="@string/percentage" />
         </RadioGroup>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:hint="@string/interest_rate"
+            app:startIconDrawable="@android:drawable/ic_menu_edit"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/interestRateInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:contentDescription="@string/interest_rate" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:hint="@string/hoa_fees_monthly"
+            app:startIconDrawable="@android:drawable/ic_menu_edit"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/hoaFeesInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:contentDescription="@string/hoa_fees_monthly" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/calculateButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Calculate" />
+            android:text="@string/calculate"
+            android:contentDescription="@string/calculate" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -119,9 +139,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Results"
+                    android:text="@string/results"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:contentDescription="@string/results" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/paymentBreakdownChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/monthly_breakdown" />
 
                 <TextView
                     android:id="@+id/monthlyPaymentResult"
@@ -132,6 +160,13 @@
 
                 <TextView
                     android:id="@+id/totalCostResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/principalInterestBreakdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -152,5 +187,13 @@
                     android:textSize="16sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/compareButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/compare"
+            android:contentDescription="@string/compare" />
     </LinearLayout>
 </ScrollView> 

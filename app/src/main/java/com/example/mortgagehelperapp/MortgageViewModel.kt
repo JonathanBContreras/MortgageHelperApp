@@ -7,14 +7,15 @@ class MortgageViewModel : ViewModel() {
     
     fun calculateMortgage(
         homePrice: Double,
-        squareFootage: Double,
-        downPaymentPercent: Double,
+        squareFootage: Double?,
+        downPayment: Double,
+        isDownPaymentPercentage: Boolean,
         interestRate: Double,
         loanTermYears: Int,
-        hoaFees: Double
+        hoaFees: Double?
     ): MortgageCalculation {
         // Convert percentage to decimal
-        val downPaymentDecimal = downPaymentPercent / 100
+        val downPaymentDecimal = if (isDownPaymentPercentage) downPayment / 100 else downPayment / homePrice
         val interestRateDecimal = interestRate / 100
         
         // Calculate loan amount
@@ -31,6 +32,11 @@ class MortgageViewModel : ViewModel() {
             (monthlyInterestRate * (1 + monthlyInterestRate).pow(numberOfPayments)) /
             ((1 + monthlyInterestRate).pow(numberOfPayments) - 1)
         
+        // Calculate total interest and principal
+        val totalPayment = monthlyPayment * numberOfPayments
+        val totalInterest = totalPayment - loanAmount
+        val totalPrincipal = loanAmount
+        
         // Calculate property tax (assuming 1.2% of home value annually)
         val annualPropertyTax = homePrice * 0.012
         val monthlyPropertyTax = annualPropertyTax / 12
@@ -40,27 +46,60 @@ class MortgageViewModel : ViewModel() {
         val monthlyHomeInsurance = annualHomeInsurance / 12
         
         // Calculate total monthly payment
-        val totalMonthlyPayment = monthlyPayment + monthlyPropertyTax + monthlyHomeInsurance + hoaFees
+        val totalMonthlyPayment = monthlyPayment + monthlyPropertyTax + monthlyHomeInsurance + (hoaFees ?: 0.0)
         
         // Calculate total cost over loan period
         val totalCost = totalMonthlyPayment * numberOfPayments + (homePrice * downPaymentDecimal)
         
-        // Calculate cost per square foot
-        val costPerSqFt = totalCost / squareFootage
+        // Calculate cost per square foot if square footage is provided
+        val costPerSqFt = if (squareFootage != null && squareFootage > 0) totalCost / squareFootage else 0.0
         
         // Create monthly breakdown
         val monthlyBreakdown = MonthlyBreakdown(
             principalAndInterest = monthlyPayment,
             propertyTax = monthlyPropertyTax,
             homeInsurance = monthlyHomeInsurance,
-            hoaFees = hoaFees
+            hoaFees = hoaFees ?: 0.0
         )
         
         return MortgageCalculation(
             monthlyPayment = totalMonthlyPayment,
             totalCost = totalCost,
             costPerSqFt = costPerSqFt,
-            monthlyBreakdown = monthlyBreakdown
+            monthlyBreakdown = monthlyBreakdown,
+            totalPrincipal = totalPrincipal,
+            totalInterest = totalInterest
         )
+    }
+
+    fun compareLoans(
+        homePrice: Double,
+        squareFootage: Double?,
+        downPayment: Double,
+        isDownPaymentPercentage: Boolean,
+        interestRate: Double,
+        hoaFees: Double?
+    ): LoanComparison {
+        val loan15Year = calculateMortgage(
+            homePrice = homePrice,
+            squareFootage = squareFootage,
+            downPayment = downPayment,
+            isDownPaymentPercentage = isDownPaymentPercentage,
+            interestRate = interestRate,
+            loanTermYears = 15,
+            hoaFees = hoaFees
+        )
+
+        val loan30Year = calculateMortgage(
+            homePrice = homePrice,
+            squareFootage = squareFootage,
+            downPayment = downPayment,
+            isDownPaymentPercentage = isDownPaymentPercentage,
+            interestRate = interestRate,
+            loanTermYears = 30,
+            hoaFees = hoaFees
+        )
+
+        return LoanComparison(loan15Year, loan30Year)
     }
 } 

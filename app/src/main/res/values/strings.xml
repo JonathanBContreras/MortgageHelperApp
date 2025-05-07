@@ -1,3 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MortgageHelperApp</string>
+    <string name="app_name">Mortgage Helper App</string>
+    <string name="app_description">Mortgage calculator app to help you estimate your home loan payments</string>
+    <string name="calculate">Calculate</string>
+    <string name="compare">Compare 15 vs 30 Year Loans</string>
+    <string name="close">Close</string>
+    <string name="results">Results</string>
+    <string name="monthly_payment">Monthly Payment</string>
+    <string name="total_cost">Total Cost</string>
+    <string name="cost_per_sqft">Cost per Square Foot</string>
+    <string name="monthly_breakdown">Monthly Breakdown</string>
+    <string name="principal_and_interest">Principal &amp; Interest</string>
+    <string name="property_tax">Property Tax</string>
+    <string name="home_insurance">Home Insurance</string>
+    <string name="hoa_fees">HOA Fees</string>
+    <string name="down_payment">Down Payment</string>
+    <string name="amount">Amount</string>
+    <string name="percentage">Percentage</string>
+    <string name="interest_rate">Interest Rate (%)</string>
+    <string name="home_price">Home Price</string>
+    <string name="square_footage">Square Footage (Optional)</string>
+    <string name="hoa_fees_monthly">HOA Fees (Monthly, Optional)</string>
 </resources>
