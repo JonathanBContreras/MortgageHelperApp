@@ -21,4 +21,8 @@
     <string name="home_price">Home Price</string>
     <string name="square_footage">Square Footage (Optional)</string>
     <string name="hoa_fees_monthly">HOA Fees (Monthly, Optional)</string>
+    <string name="loan_term">Loan Term</string>
+    <string name="loan_term_15">15 Years</string>
+    <string name="loan_term_30">30 Years</string>
+    <string name="monthly_payment_breakdown">Monthly Payment Breakdown</string>
 </resources>

@@ -101,6 +101,39 @@
                 android:contentDescription="@string/interest_rate" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loan_term"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/loan_term" />
+
+        <RadioGroup
+            android:id="@+id/loanTermGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/loanTerm15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/loan_term_15"
+                android:contentDescription="@string/loan_term_15" />
+
+            <RadioButton
+                android:id="@+id/loanTerm30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="@string/loan_term_30"
+                android:contentDescription="@string/loan_term_30" />
+        </RadioGroup>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

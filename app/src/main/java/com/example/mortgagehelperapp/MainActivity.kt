@@ -10,6 +10,9 @@ import com.example.mortgagehelperapp.databinding.ActivityMainBinding
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import java.text.NumberFormat
 import java.util.Locale
@@ -73,7 +76,17 @@ class MainActivity : AppCompatActivity() {
             rotationAngle = 0f
             isRotationEnabled = true
             isHighlightPerTapEnabled = true
-            legend.isEnabled = true
+            legend.apply {
+                isEnabled = true
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                setDrawInside(false)
+                textSize = 12f
+                formSize = 12f
+                formToTextSpace = 5f
+                xEntrySpace = 10f
+            }
             setEntryLabelColor(Color.BLACK)
             setEntryLabelTextSize(12f)
         }
@@ -88,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                 val isDownPaymentPercentage = binding.downPaymentPercent.isChecked
                 val interestRate = binding.interestRateInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
                 val hoaFees = binding.hoaFeesInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
+                val loanTermYears = if (binding.loanTerm15.isChecked) 15 else 30
 
                 if (homePrice == null || downPayment == null || interestRate == null) {
                     Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
@@ -100,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                     downPayment = downPayment,
                     isDownPaymentPercentage = isDownPaymentPercentage,
                     interestRate = interestRate,
-                    loanTermYears = 30,
+                    loanTermYears = loanTermYears,
                     hoaFees = hoaFees
                 )
                 displayResults(result)
@@ -165,20 +179,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateChart(breakdown: MonthlyBreakdown) {
-        val entries = listOf(
-            PieEntry(breakdown.principalAndInterest.toFloat(), "Principal & Interest"),
-            PieEntry(breakdown.propertyTax.toFloat(), "Property Tax"),
-            PieEntry(breakdown.homeInsurance.toFloat(), "Home Insurance"),
-            PieEntry(breakdown.hoaFees.toFloat(), "HOA Fees")
-        )
+        val entries = mutableListOf<PieEntry>()
+        val labels = mutableListOf<String>()
 
-        val dataSet = PieDataSet(entries, "Monthly Payment Breakdown").apply {
-            colors = ColorTemplate.MATERIAL_COLORS.toList()
-            valueTextColor = Color.BLACK
-            valueTextSize = 12f
+        if (breakdown.principalAndInterest > 0) {
+            entries.add(PieEntry(breakdown.principalAndInterest.toFloat(), getString(R.string.principal_and_interest)))
+            labels.add(getString(R.string.principal_and_interest))
+        }
+        if (breakdown.propertyTax > 0) {
+            entries.add(PieEntry(breakdown.propertyTax.toFloat(), getString(R.string.property_tax)))
+            labels.add(getString(R.string.property_tax))
+        }
+        if (breakdown.homeInsurance > 0) {
+            entries.add(PieEntry(breakdown.homeInsurance.toFloat(), getString(R.string.home_insurance)))
+            labels.add(getString(R.string.home_insurance))
+        }
+        if (breakdown.hoaFees > 0) {
+            entries.add(PieEntry(breakdown.hoaFees.toFloat(), getString(R.string.hoa_fees)))
+            labels.add(getString(R.string.hoa_fees))
         }
 
-        binding.paymentBreakdownChart.data = PieData(dataSet)
-        binding.paymentBreakdownChart.invalidate()
+        if (entries.isNotEmpty()) {
+            val dataSet = PieDataSet(entries, getString(R.string.monthly_payment_breakdown)).apply {
+                colors = ColorTemplate.MATERIAL_COLORS.toList()
+                valueTextColor = Color.BLACK
+                valueTextSize = 12f
+                valueFormatter = DefaultValueFormatter(0)
+            }
+
+            binding.paymentBreakdownChart.apply {
+                data = PieData(dataSet)
+                legend.setCustom(labels.mapIndexed { index, label ->
+                    LegendEntry(label, Legend.LegendForm.CIRCLE, 12f, 12f, null, ColorTemplate.MATERIAL_COLORS[index])
+                })
+                invalidate()
+            }
+        }
     }
 } 
