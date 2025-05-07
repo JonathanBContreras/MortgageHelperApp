@@ -11,6 +11,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var calculatorFragment: CalculatorFragment
     private lateinit var amortizationFragment: AmortizationFragment
+    private lateinit var comparisonFragment: ComparisonFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,14 +25,16 @@ class MainActivity : AppCompatActivity() {
     private fun setupViewPager() {
         calculatorFragment = CalculatorFragment()
         amortizationFragment = AmortizationFragment()
+        comparisonFragment = ComparisonFragment()
 
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount(): Int = 2
+            override fun getItemCount(): Int = 3
 
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
                     0 -> calculatorFragment
                     1 -> amortizationFragment
+                    2 -> comparisonFragment
                     else -> throw IllegalArgumentException("Invalid position $position")
                 }
             }
@@ -43,6 +46,7 @@ class MainActivity : AppCompatActivity() {
             tab.text = when (position) {
                 0 -> getString(R.string.calculator)
                 1 -> getString(R.string.amortization)
+                2 -> getString(R.string.comparison)
                 else -> throw IllegalArgumentException("Invalid position $position")
             }
         }.attach()

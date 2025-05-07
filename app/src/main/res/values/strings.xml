@@ -33,4 +33,5 @@
     <string name="total_principal">Total Principal</string>
     <string name="total_interest">Total Interest</string>
     <string name="year">Year</string>
+    <string name="comparison">Comparison</string>
 </resources>

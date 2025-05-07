@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.github.mikephil.charting.charts.CombinedChart
         android:id="@+id/amortizationChart"
         android:layout_width="match_parent"
         android:layout_height="0dp"

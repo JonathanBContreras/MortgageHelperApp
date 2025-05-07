@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.mortgagehelperapp.databinding.FragmentCalculatorBinding
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LegendEntry
@@ -24,6 +25,7 @@ class CalculatorFragment : Fragment() {
     private var _binding: FragmentCalculatorBinding? = null
     private val binding get() = _binding!!
     private val viewModel = MortgageViewModel()
+    private val sharedViewModel: SharedMortgageViewModel by activityViewModels()
     private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US)
     private val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
         maximumFractionDigits = 2
@@ -131,7 +133,47 @@ class CalculatorFragment : Fragment() {
                     loanTermYears = loanTermYears,
                     hoaFees = hoaFees
                 )
+                sharedViewModel.setCalculation(result)
+                // Also update comparison automatically
+                val comparison = viewModel.compareLoans(
+                    homePrice = homePrice,
+                    squareFootage = squareFootage,
+                    downPayment = downPayment,
+                    isDownPaymentPercentage = isDownPaymentPercentage,
+                    interestRate = interestRate,
+                    hoaFees = hoaFees
+                )
+                sharedViewModel.setComparison(comparison)
                 displayResults(result)
+            } catch (e: Exception) {
+                val msg = e.message ?: "An unexpected error occurred."
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.compareButton?.setOnClickListener {
+            try {
+                val homePrice = binding.homePriceInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
+                val squareFootage = binding.squareFootageInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
+                val downPayment = binding.downPaymentInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
+                val isDownPaymentPercentage = binding.downPaymentPercent.isChecked
+                val interestRate = binding.interestRateInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
+                val hoaFees = binding.hoaFeesInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
+
+                if (homePrice == null || downPayment == null || interestRate == null) {
+                    Toast.makeText(context, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val comparison = viewModel.compareLoans(
+                    homePrice = homePrice,
+                    squareFootage = squareFootage,
+                    downPayment = downPayment,
+                    isDownPaymentPercentage = isDownPaymentPercentage,
+                    interestRate = interestRate,
+                    hoaFees = hoaFees
+                )
+                sharedViewModel.setComparison(comparison)
+                Toast.makeText(context, "Comparison data updated! Switch to the Comparison tab.", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -167,9 +209,18 @@ class CalculatorFragment : Fragment() {
         val entries = mutableListOf<PieEntry>()
         val labels = mutableListOf<String>()
 
-        if (breakdown.principalAndInterest > 0) {
-            entries.add(PieEntry(breakdown.principalAndInterest.toFloat(), getString(R.string.principal_and_interest)))
-            labels.add(getString(R.string.principal_and_interest))
+        // Calculate principal and interest split
+        val monthlyRate = breakdown.interestRate / 100 / 12
+        val interest = breakdown.loanAmount * monthlyRate
+        val principal = breakdown.principalAndInterest - interest
+
+        if (principal > 0) {
+            entries.add(PieEntry(principal.toFloat(), getString(R.string.principal)))
+            labels.add(getString(R.string.principal))
+        }
+        if (interest > 0) {
+            entries.add(PieEntry(interest.toFloat(), getString(R.string.interest)))
+            labels.add(getString(R.string.interest))
         }
         if (breakdown.propertyTax > 0) {
             entries.add(PieEntry(breakdown.propertyTax.toFloat(), getString(R.string.property_tax)))
@@ -194,8 +245,10 @@ class CalculatorFragment : Fragment() {
 
             binding.paymentBreakdownChart.apply {
                 data = PieData(dataSet)
+                legend.orientation = Legend.LegendOrientation.HORIZONTAL
+                legend.isWordWrapEnabled = true
                 legend.setCustom(labels.mapIndexed { index, label ->
-                    LegendEntry(label, Legend.LegendForm.CIRCLE, 12f, 12f, null, ColorTemplate.MATERIAL_COLORS[index])
+                    LegendEntry(label, Legend.LegendForm.CIRCLE, 12f, 12f, null, ColorTemplate.MATERIAL_COLORS[index % ColorTemplate.MATERIAL_COLORS.size])
                 })
                 invalidate()
             }
