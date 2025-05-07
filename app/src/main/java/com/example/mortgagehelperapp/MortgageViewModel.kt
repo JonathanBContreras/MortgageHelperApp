@@ -14,61 +14,61 @@ class MortgageViewModel : ViewModel() {
         loanTermYears: Int,
         hoaFees: Double?
     ): MortgageCalculation {
-        // Convert percentage to decimal
-        val downPaymentDecimal = if (isDownPaymentPercentage) downPayment / 100 else downPayment / homePrice
-        val interestRateDecimal = interestRate / 100
-        
         // Calculate loan amount
-        val loanAmount = homePrice * (1 - downPaymentDecimal)
-        
-        // Calculate monthly interest rate
-        val monthlyInterestRate = interestRateDecimal / 12
-        
-        // Calculate number of payments
+        val actualDownPayment = if (isDownPaymentPercentage) {
+            homePrice * (downPayment / 100)
+        } else {
+            downPayment
+        }
+        val loanAmount = homePrice - actualDownPayment
+
+        // Calculate monthly interest rate and number of payments
+        val monthlyRate = interestRate / 100 / 12
         val numberOfPayments = loanTermYears * 12
-        
+
         // Calculate monthly principal and interest payment
-        val monthlyPayment = loanAmount * 
-            (monthlyInterestRate * (1 + monthlyInterestRate).pow(numberOfPayments)) /
-            ((1 + monthlyInterestRate).pow(numberOfPayments) - 1)
-        
-        // Calculate total interest and principal
-        val totalPayment = monthlyPayment * numberOfPayments
-        val totalInterest = totalPayment - loanAmount
-        val totalPrincipal = loanAmount
-        
-        // Calculate property tax (assuming 1.2% of home value annually)
-        val annualPropertyTax = homePrice * 0.012
+        val monthlyPrincipalAndInterest = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments.toDouble())) /
+                (Math.pow(1 + monthlyRate, numberOfPayments.toDouble()) - 1)
+
+        // Calculate property tax (1% of home price annually)
+        val annualPropertyTax = homePrice * 0.01
         val monthlyPropertyTax = annualPropertyTax / 12
-        
-        // Calculate home insurance (assuming 0.5% of home value annually)
+
+        // Calculate home insurance (0.5% of home price annually)
         val annualHomeInsurance = homePrice * 0.005
         val monthlyHomeInsurance = annualHomeInsurance / 12
-        
+
         // Calculate total monthly payment
-        val totalMonthlyPayment = monthlyPayment + monthlyPropertyTax + monthlyHomeInsurance + (hoaFees ?: 0.0)
-        
-        // Calculate total cost over loan period
-        val totalCost = totalMonthlyPayment * numberOfPayments + (homePrice * downPaymentDecimal)
-        
+        val monthlyPayment = monthlyPrincipalAndInterest + monthlyPropertyTax + monthlyHomeInsurance + (hoaFees ?: 0.0)
+
+        // Calculate total cost
+        val totalCost = monthlyPayment * numberOfPayments
+
+        // Calculate total principal and interest
+        val totalPrincipal = loanAmount
+        val totalInterest = (monthlyPrincipalAndInterest * numberOfPayments) - loanAmount
+
         // Calculate cost per square foot if square footage is provided
-        val costPerSqFt = if (squareFootage != null && squareFootage > 0) totalCost / squareFootage else 0.0
-        
+        val costPerSqFt = squareFootage?.let { homePrice / it }
+
         // Create monthly breakdown
         val monthlyBreakdown = MonthlyBreakdown(
-            principalAndInterest = monthlyPayment,
+            principalAndInterest = monthlyPrincipalAndInterest,
             propertyTax = monthlyPropertyTax,
             homeInsurance = monthlyHomeInsurance,
-            hoaFees = hoaFees ?: 0.0
+            hoaFees = hoaFees ?: 0.0,
+            interestRate = interestRate,
+            loanTermYears = loanTermYears,
+            loanAmount = loanAmount
         )
-        
+
         return MortgageCalculation(
-            monthlyPayment = totalMonthlyPayment,
+            monthlyPayment = monthlyPayment,
             totalCost = totalCost,
-            costPerSqFt = costPerSqFt,
-            monthlyBreakdown = monthlyBreakdown,
             totalPrincipal = totalPrincipal,
-            totalInterest = totalInterest
+            totalInterest = totalInterest,
+            costPerSqFt = costPerSqFt,
+            monthlyBreakdown = monthlyBreakdown
         )
     }
 

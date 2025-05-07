@@ -3,17 +3,20 @@ package com.example.mortgagehelperapp
 data class MortgageCalculation(
     val monthlyPayment: Double,
     val totalCost: Double,
-    val costPerSqFt: Double,
-    val monthlyBreakdown: MonthlyBreakdown,
     val totalPrincipal: Double,
-    val totalInterest: Double
+    val totalInterest: Double,
+    val costPerSqFt: Double?,
+    val monthlyBreakdown: MonthlyBreakdown
 )
 
 data class MonthlyBreakdown(
     val principalAndInterest: Double,
     val propertyTax: Double,
     val homeInsurance: Double,
-    val hoaFees: Double
+    val hoaFees: Double,
+    val interestRate: Double,
+    val loanTermYears: Int,
+    val loanAmount: Double
 )
 
 data class LoanComparison(

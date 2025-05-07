@@ -25,4 +25,12 @@
     <string name="loan_term_15">15 Years</string>
     <string name="loan_term_30">30 Years</string>
     <string name="monthly_payment_breakdown">Monthly Payment Breakdown</string>
+    <string name="calculator">Calculator</string>
+    <string name="amortization">Amortization</string>
+    <string name="amortization_chart_description">Graph showing principal and interest payments over time</string>
+    <string name="principal">Principal</string>
+    <string name="interest">Interest</string>
+    <string name="total_principal">Total Principal</string>
+    <string name="total_interest">Total Interest</string>
+    <string name="year">Year</string>
 </resources>
