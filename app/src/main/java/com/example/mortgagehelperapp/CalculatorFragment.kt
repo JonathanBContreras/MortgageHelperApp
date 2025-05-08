@@ -150,34 +150,6 @@ class CalculatorFragment : Fragment() {
                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             }
         }
-        binding.compareButton?.setOnClickListener {
-            try {
-                val homePrice = binding.homePriceInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
-                val squareFootage = binding.squareFootageInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
-                val downPayment = binding.downPaymentInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
-                val isDownPaymentPercentage = binding.downPaymentPercent.isChecked
-                val interestRate = binding.interestRateInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
-                val hoaFees = binding.hoaFeesInput.text.toString().replace(Regex("[^\\d.]"), "").toDoubleOrNull()
-
-                if (homePrice == null || downPayment == null || interestRate == null) {
-                    Toast.makeText(context, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                val comparison = viewModel.compareLoans(
-                    homePrice = homePrice,
-                    squareFootage = squareFootage,
-                    downPayment = downPayment,
-                    isDownPaymentPercentage = isDownPaymentPercentage,
-                    interestRate = interestRate,
-                    hoaFees = hoaFees
-                )
-                sharedViewModel.setComparison(comparison)
-                Toast.makeText(context, "Comparison data updated! Switch to the Comparison tab.", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun displayResults(result: MortgageCalculation) {
@@ -206,49 +178,30 @@ class CalculatorFragment : Fragment() {
     }
 
     private fun updateChart(breakdown: MonthlyBreakdown) {
-        val entries = mutableListOf<PieEntry>()
-        val labels = mutableListOf<String>()
-
+        val sections = mutableListOf<Pair<String, Float>>()
         // Calculate principal and interest split
         val monthlyRate = breakdown.interestRate / 100 / 12
         val interest = breakdown.loanAmount * monthlyRate
         val principal = breakdown.principalAndInterest - interest
-
-        if (principal > 0) {
-            entries.add(PieEntry(principal.toFloat(), getString(R.string.principal)))
-            labels.add(getString(R.string.principal))
-        }
-        if (interest > 0) {
-            entries.add(PieEntry(interest.toFloat(), getString(R.string.interest)))
-            labels.add(getString(R.string.interest))
-        }
-        if (breakdown.propertyTax > 0) {
-            entries.add(PieEntry(breakdown.propertyTax.toFloat(), getString(R.string.property_tax)))
-            labels.add(getString(R.string.property_tax))
-        }
-        if (breakdown.homeInsurance > 0) {
-            entries.add(PieEntry(breakdown.homeInsurance.toFloat(), getString(R.string.home_insurance)))
-            labels.add(getString(R.string.home_insurance))
-        }
-        if (breakdown.hoaFees > 0) {
-            entries.add(PieEntry(breakdown.hoaFees.toFloat(), getString(R.string.hoa_fees)))
-            labels.add(getString(R.string.hoa_fees))
-        }
-
+        if (principal > 0) sections.add(getString(R.string.principal) to principal.toFloat())
+        if (interest > 0) sections.add(getString(R.string.interest) to interest.toFloat())
+        if (breakdown.propertyTax > 0) sections.add(getString(R.string.property_tax) to breakdown.propertyTax.toFloat())
+        if (breakdown.homeInsurance > 0) sections.add(getString(R.string.home_insurance) to breakdown.homeInsurance.toFloat())
+        if (breakdown.hoaFees > 0) sections.add(getString(R.string.hoa_fees) to breakdown.hoaFees.toFloat())
+        val entries = sections.map { PieEntry(it.second, it.first) }
         if (entries.isNotEmpty()) {
             val dataSet = PieDataSet(entries, getString(R.string.monthly_payment_breakdown)).apply {
-                colors = ColorTemplate.MATERIAL_COLORS.toList()
+                colors = List(entries.size) { ColorTemplate.MATERIAL_COLORS[it % ColorTemplate.MATERIAL_COLORS.size] }
                 valueTextColor = Color.BLACK
                 valueTextSize = 12f
                 valueFormatter = DefaultValueFormatter(0)
             }
-
             binding.paymentBreakdownChart.apply {
                 data = PieData(dataSet)
                 legend.orientation = Legend.LegendOrientation.HORIZONTAL
                 legend.isWordWrapEnabled = true
-                legend.setCustom(labels.mapIndexed { index, label ->
-                    LegendEntry(label, Legend.LegendForm.CIRCLE, 12f, 12f, null, ColorTemplate.MATERIAL_COLORS[index % ColorTemplate.MATERIAL_COLORS.size])
+                legend.setCustom(sections.mapIndexed { index, pair ->
+                    LegendEntry(pair.first, Legend.LegendForm.CIRCLE, 12f, 12f, null, ColorTemplate.MATERIAL_COLORS[index % ColorTemplate.MATERIAL_COLORS.size])
                 })
                 invalidate()
             }

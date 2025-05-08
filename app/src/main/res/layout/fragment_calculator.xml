@@ -158,14 +158,6 @@
             android:text="@string/calculate"
             android:contentDescription="@string/calculate" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/compareButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/compare"
-            android:contentDescription="@string/compare" />
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

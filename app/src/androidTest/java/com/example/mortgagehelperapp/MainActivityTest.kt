@@ -21,7 +21,7 @@ class MainActivityTest {
         // Input values
         onView(withId(R.id.homePriceInput)).perform(typeText("300000"), closeSoftKeyboard())
         onView(withId(R.id.squareFootageInput)).perform(typeText("2000"), closeSoftKeyboard())
-        onView(withId(R.id.downPaymentPercentInput)).perform(typeText("20"), closeSoftKeyboard())
+        onView(withId(R.id.downPaymentPercent)).perform(typeText("20"), closeSoftKeyboard())
         onView(withId(R.id.interestRateInput)).perform(typeText("4.5"), closeSoftKeyboard())
         onView(withId(R.id.hoaFeesInput)).perform(typeText("100"), closeSoftKeyboard())
 
@@ -40,7 +40,7 @@ class MainActivityTest {
         // Input invalid values
         onView(withId(R.id.homePriceInput)).perform(typeText("-1000"), closeSoftKeyboard())
         onView(withId(R.id.squareFootageInput)).perform(typeText("0"), closeSoftKeyboard())
-        onView(withId(R.id.downPaymentPercentInput)).perform(typeText("-10"), closeSoftKeyboard())
+        onView(withId(R.id.downPaymentPercent)).perform(typeText("-10"), closeSoftKeyboard())
         onView(withId(R.id.interestRateInput)).perform(typeText("0"), closeSoftKeyboard())
         onView(withId(R.id.hoaFeesInput)).perform(typeText("-50"), closeSoftKeyboard())
 

@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="MortgageCalculator">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-05-07T19:55:05.547371700Z">
+        <DropdownSelection timestamp="2025-05-08T00:12:57.374811500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Owner\.android\avd\Medium_Phone.avd" />

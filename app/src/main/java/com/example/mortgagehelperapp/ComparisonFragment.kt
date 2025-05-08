@@ -81,6 +81,10 @@ class ComparisonFragment : Fragment() {
         tv.setPadding(8, 8, 8, 8)
         tv.textSize = 16f
         if (bold) tv.setTypeface(tv.typeface, android.graphics.Typeface.BOLD)
+        val typedArray = requireContext().theme.obtainStyledAttributes(intArrayOf(android.R.attr.textColorPrimary))
+        val color = typedArray.getColor(0, 0xFF000000.toInt())
+        typedArray.recycle()
+        tv.setTextColor(color)
         return tv
     }
 

@@ -130,10 +130,23 @@ class AmortizationFragment : Fragment() {
             xAxis.labelRotationAngle = -45f
             axisLeft.axisMinimum = 0f
             axisRight.axisMinimum = 0f
+            // Set axis and legend text color for dark mode compatibility
+            val typedArray = requireContext().theme.obtainStyledAttributes(intArrayOf(android.R.attr.textColorPrimary))
+            val color = typedArray.getColor(0, 0xFF000000.toInt())
+            typedArray.recycle()
+            xAxis.textColor = color
+            axisLeft.textColor = color
+            axisRight.textColor = color
+            legend.textColor = color
             invalidate()
         }
 
         binding.amortizationSummary.text = "Total Principal: ${currencyFormat.format(totalPrincipal)}\nTotal Interest: ${currencyFormat.format(totalInterest)}\nTotal Taxes & Fees: ${currencyFormat.format(totalTaxes)}\nTotal Cost: ${currencyFormat.format(totalPrincipal + totalInterest + totalTaxes)}"
+        // Set summary text color to theme's primary text color
+        val typedArray = requireContext().theme.obtainStyledAttributes(intArrayOf(android.R.attr.textColorPrimary))
+        val color = typedArray.getColor(0, 0xFF000000.toInt())
+        typedArray.recycle()
+        binding.amortizationSummary.setTextColor(color)
     }
 
     override fun onDestroyView() {
